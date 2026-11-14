@@ -1,0 +1,6 @@
+trl==1.7.1
+peft
+transformers
+datasets
+accelerate
+huggingface_hub

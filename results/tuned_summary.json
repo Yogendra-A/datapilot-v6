@@ -1,0 +1,25 @@
+{
+  "tag": "tuned",
+  "model": "CohereLabs/tiny-aya-global",
+  "adapter": "/home/user/.cache/huggingface/hub/models--Yogi016--datapilot-v6-smoke-gpu/snapshots/734694f7e895054ce2a3c4b85689cf5e3d83d6cc/last-checkpoint",
+  "decoding": "greedy",
+  "max_new_tokens": 160,
+  "test_iid": {
+    "n": 51,
+    "execution_accuracy": 0.8235294117647058,
+    "ci95": [
+      0.7254901960784313,
+      0.9215686274509803
+    ],
+    "valid_sql_rate": 1.0
+  },
+  "test_novel": {
+    "n": 17,
+    "execution_accuracy": 0.47058823529411764,
+    "ci95": [
+      0.23529411764705882,
+      0.7058823529411765
+    ],
+    "valid_sql_rate": 0.9411764705882353
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "tag": "base",
+  "model": "CohereLabs/tiny-aya-global",
+  "adapter": null,
+  "decoding": "greedy",
+  "max_new_tokens": 160,
+  "test_iid": {
+    "n": 51,
+    "execution_accuracy": 0.6078431372549019,
+    "ci95": [
+      0.47058823529411764,
+      0.7450980392156863
+    ],
+    "valid_sql_rate": 0.9411764705882353
+  },
+  "test_novel": {
+    "n": 17,
+    "execution_accuracy": 0.35294117647058826,
+    "ci95": [
+      0.11764705882352941,
+      0.5882352941176471
+    ],
+    "valid_sql_rate": 1.0
+  }
+}

@@ -7,3 +7,11 @@ recovered_datapilot_handoff/
 *.zip
 *.safetensors
 *.whl
+_excluded/
+*.bin
+*.pt
+*.pth
+*.db
+__pycache__/
+smoke_out/
+grpo_out/

@@ -1,0 +1,371 @@
+notebook: Untitled0.ipynb | cells: 195
+
+== SUMMARY ==
+agenttune: imported in cells [39, 72, 72, 72, 73, 73, 83, 84, 90, 91, 111, 112, 113, 114, 115] | names imported: ['BaseTool', 'ToolResult', 'TrlAgenticGrpo', 'create_agentic_trainer', 'create_rollout_fn', 'importlib', 'os', 'transformers', 'trl'] | mentioned in 119 cells
+auditkit: imported in cells [] | names imported: [] | mentioned in 9 cells
+pip install lines: none
+
+== API USED (module.attribute) ==
+agenttune: agenttune.agentic.rollout_engines.rollout_factory x6, agenttune.backends.trl.agentic.grpo.agentic_grpo x5, agenttune.__file__ x5, agenttune.agentic.tools.base x4, agenttune.core.backend_factory x4, agenttune.api x3, agenttune.agentic x3, agenttune.data.manager x1, agenttune.agentic.rollout_factory x1, agenttune.create_agentic_trainer x1
+auditkit: none
+
+== CELLS THAT IMPORT A KIT (first 8) ==
+
+--- cell 39 source (first 18 lines) ---
+  
+  # GPU STEP 37 — Implement DataPilotQuestionBoundSQLTool
+  # Creates the missing V6 tool and runs initial CPU smoke tests.
+  
+  from pathlib import Path
+  import importlib.util
+  import sys
+  import textwrap
+  
+  root = Path("/content/datapilot_v6_gpu/DataPilot_recovered_20261111")
+  source_dir = root / "source"
+  candidate_dir = source_dir / "validated_candidates"
+  
+  parser_path = source_dir / "sql_parser_v11.py"
+  validator_path = candidate_dir / "sql_validator_v12_customer_count_fix.py"
+  db_path = root / "database/datapilot_test.db"
+  
+  for path in (parser_path, validator_path, db_path):
+--- cell 39 output (first 500 chars) ---
+  Created: /content/datapilot_v6_gpu/DataPilot_recovered_20261111/source/validated_candidates/datapilot_question_bound_sql_tool_v6.py
+  
+  TOOL SCHEMA:
+  {'type': 'function', 'function': {'name': 'execute_sql', 'description': 'Validate and execute a read-only SQL query for the bound business question. Returns rows from the database.', 'parameters': {'type': 'object', 'properties': {'sql': {'type': 'string', 'description': 'SQL query to validate and execute.'}}, 'required': ['sql'], 'additionalProperties
+
+--- cell 72 source (first 18 lines) ---
+  
+  # GPU STEP 69 — Inspect AgentTune / TRL GRPO contracts
+  import inspect
+  import importlib
+  import importlib.metadata as metadata
+  
+  from agenttune.core.backend_factory import create_agentic_trainer
+  from agenttune.agentic.rollout_engines.rollout_factory import create_rollout_fn
+  from agenttune.backends.trl.agentic.grpo.agentic_grpo import TrlAgenticGrpo
+  from trl import GRPOTrainer, GRPOConfig
+  from peft import LoraConfig
+  
+  def show_signature(label, obj):
+      print("\n" + "=" * 90)
+      print(label)
+      try:
+          print("Signature:", inspect.signature(obj))
+      except Exception as exc:
+--- cell 72 output (first 500 chars) ---
+  ==========================================================================================
+  AgentTune create_agentic_trainer
+  Signature: (algorithm: str, backend: str = 'auto', **kwargs) -> Any
+  
+  Source location: /usr/local/lib/python3.13/dist-packages/agenttune/core/backend_factory.py
+  
+  ==========================================================================================
+  AgentTune create_rollout_fn
+  Signature: (rollout_engine: agenttune.agentic.rollout_engines.base.RolloutEngine | None = None, 
+
+--- cell 73 source (first 18 lines) ---
+  
+  # GPU STEP 70 — Inspect AgentTune-to-TRL trainer wiring
+  import inspect
+  import importlib.util
+  
+  from agenttune.core.backend_factory import create_agentic_trainer
+  from agenttune.backends.trl.agentic.grpo.agentic_grpo import TrlAgenticGrpo
+  
+  print("=" * 90)
+  print("BACKEND FACTORY SOURCE")
+  print(inspect.getsource(create_agentic_trainer))
+  
+  print("\n" + "=" * 90)
+  print("TrlAgenticGrpo METHODS")
+  for name, member in inspect.getmembers(TrlAgenticGrpo, predicate=inspect.isfunction):
+      print(f"\n--- {name}{inspect.signature(member)} ---")
+      try:
+          source = inspect.getsource(member)
+--- cell 73 output (first 500 chars) ---
+  ==========================================================================================
+  BACKEND FACTORY SOURCE
+  def create_agentic_trainer(algorithm: str, backend: str = "auto", **kwargs) -> Any:
+      """
+      Create an agentic trainer (GRPO, DPO, PPO, RLOO, or BCO).
+  
+      All configuration is passed as **kwargs and forwarded verbatim to the
+      underlying trainer class — no config object needed.
+  
+      Parameters
+      ----------
+      algorithm : "grpo" | "dpo" | "ppo" | "rloo" | "bco"
+      backend   
+
+--- cell 83 source (first 18 lines) ---
+  
+  # GPU STEP 82 — Diagnose AgentTune import and runtime state
+  import sys
+  import importlib.util
+  import importlib.metadata as metadata
+  from pathlib import Path
+  
+  print("=" * 85)
+  print("RUNTIME STATE")
+  print("=" * 85)
+  
+  print("Python:", sys.version)
+  print("AgentTune distribution:", end=" ")
+  
+  try:
+      print(metadata.version("agenttune"))
+  except Exception as exc:
+      print("NOT FOUND:", repr(exc))
+--- cell 83 output (first 500 chars) ---
+  =====================================================================================
+  RUNTIME STATE
+  =====================================================================================
+  Python: 3.13.16 (main, Oct  1 2026, 15:40:24) [GCC 13.3.0]
+  AgentTune distribution: 1.1.3
+  
+  IMPORTANT VARIABLES
+  model: AVAILABLE
+  tokenizer: AVAILABLE
+  records: AVAILABLE
+  pipeline: AVAILABLE
+  loaded: AVAILABLE
+  
+  MODULE RESOLUTION
+  agenttune => /usr/local/lib/python3.13/dist-packages/agenttune/__init__.py
+  agenttune.agent
+
+--- cell 84 source (first 18 lines) ---
+  
+  # GPU STEP 83 — Correct AgentTune import and construct V2 adapter
+  import inspect
+  from agenttune.agentic.rollout_engines.rollout_factory import create_rollout_fn
+  
+  assert model is not None
+  assert tokenizer is not None
+  assert len(records) == 8
+  assert pipeline is not None
+  
+  prompt_record_map = {
+      item["prompt"]: item
+      for item in records
+  }
+  
+  def tool_factory(prompt, record, index):
+      return loaded["datapilot_sql_tool"].DataPilotQuestionBoundSQLTool(
+          question=record["question"],
+--- cell 84 output (first 500 chars) ---
+  ROLLOUT FACTORY: (rollout_engine: agenttune.agentic.rollout_engines.base.RolloutEngine | None = None, rollout_backend: str | None = None, model=None, tokenizer=None, model_path: str | None = None, api_provider: str | None = None, api_model: str | None = None, api_key: str | None = None, api_base_url: str | None = None, engine_kwargs: dict | None = None, tools: list | None = None, max_steps: int = 20, reward_fn: collections.abc.Callable | None = None, custom_rollout_fn: collections.abc.Callable |
+
+--- cell 90 source (first 18 lines) ---
+  
+  # GPU STEP 95 — Locate actual AgentTune GRPO backend module
+  import agenttune
+  import os
+  import pathlib
+  import inspect
+  import importlib
+  import pkgutil
+  
+  package_path = pathlib.Path(agenttune.__file__).resolve().parent
+  
+  print("AGENTTUNE PACKAGE:")
+  print(package_path)
+  
+  print("\nGRPO-RELATED MODULE FILES:")
+  for path in package_path.rglob("*.py"):
+      if "grpo" in str(path).lower() or "backend" in path.name.lower():
+          print(path.relative_to(package_path))
+--- cell 90 output (first 500 chars) ---
+  AGENTTUNE PACKAGE:
+  /usr/local/lib/python3.13/dist-packages/agenttune
+  
+  GRPO-RELATED MODULE FILES:
+  core/backend_factory.py
+  rag/retrieval/chroma_backend.py
+  rag/retrieval/hybrid_backend.py
+  rag/scripts/train_grpo.py
+  backends/trl/agentic/grpo/__init__.py
+  backends/trl/agentic/grpo/agentic_grpo.py
+  backends/unsloth/agentic/grpo/__init__.py
+  backends/unsloth/agentic/grpo/agentic_grpo.py
+  
+  SEARCHING FOR TrlAgenticGrpo DEFINITION:
+  
+  FILE: /usr/local/lib/python3.13/dist-packages/agenttune/core/backend_factory.p
+
+--- cell 91 source (first 18 lines) ---
+  
+  # GPU STEP 96 — Inspect correct TRL GRPO implementation and batching behavior
+  import inspect
+  import trl
+  from trl import GRPOConfig, GRPOTrainer
+  from agenttune.backends.trl.agentic.grpo.agentic_grpo import TrlAgenticGrpo
+  
+  print("=" * 90)
+  print("INSTALLED IMPLEMENTATION")
+  print("=" * 90)
+  print("TRL:", trl.__version__)
+  print("Backend:", inspect.getfile(TrlAgenticGrpo))
+  print("GRPOConfig signature:", inspect.signature(GRPOConfig))
+  print("GRPOTrainer signature:", inspect.signature(GRPOTrainer))
+  
+  print("\n" + "=" * 90)
+  print("GENERATION METHODS")
+  print("=" * 90)
+--- cell 91 output (first 500 chars) ---
+  ==========================================================================================
+  INSTALLED IMPLEMENTATION
+  ==========================================================================================
+  TRL: 1.7.1
+  Backend: /usr/local/lib/python3.13/dist-packages/agenttune/backends/trl/agentic/grpo/agentic_grpo.py
+  GRPOConfig signature: (output_dir: str | None = None, per_device_train_batch_size: int = 8, num_train_epochs: float = 3.0, max_steps: int = -1, learning_rate: float = 1e-06, lr_sche
+
+--- cell 111 source (first 18 lines) ---
+  
+  import sys
+  import importlib.metadata as metadata
+  
+  print("=" * 75)
+  print("DATAPILOT V6 — POST-INSTALLATION RUNTIME VERIFICATION")
+  print("=" * 75)
+  
+  print("\nPYTHON:", sys.version)
+  
+  packages = [
+      "torch",
+      "torchvision",
+      "torchao",
+      "trl",
+      "agenttune",
+      "transformers",
+      "peft",
+--- cell 111 output (first 500 chars) ---
+  ===========================================================================
+  DATAPILOT V6 — POST-INSTALLATION RUNTIME VERIFICATION
+  ===========================================================================
+  
+  PYTHON: 3.13.16 (main, Oct  1 2026, 15:40:24) [GCC 13.3.0]
+  
+  PACKAGE VERSIONS
+  torch: 2.11.0+cu130
+  torchvision: 0.26.0+cu130
+  torchao: 0.17.0
+  trl: 1.7.1
+  agenttune: NOT INSTALLED
+  transformers: 5.22.1
+  peft: 0.21.2
+  accelerate: 1.15.0
+  datasets: 4.8.5
+  
+  CUDA VERIFICATION
+  PyTorch: 2.11.0+cu130
+  CUDA bui
+
+== OUTPUTS WITH SCORE-LIKE WORDS IN CELLS MENTIONING AuditKIT (first 6) ==
+
+--- cell 1 ---
+  ===========================================================================
+  STEP 2A — ZIP INTEGRITY
+  ===========================================================================
+  ZIP integrity: PASSED
+  Total archive entries: 34
+  
+  STEP 2B — EXTRACTION
+  Extracted to: /content/datapilot_v6_gpu
+  
+  ===========================================================================
+  STEP 2C — RECOVERED PROJECT STRUCTURE
+  ===========================================================================
+  Total extracted files: 34
+  [DIR]  DataPilot_recovered_20261111
+  [FILE] GPU_HANDOFF_README.md
+  [FILE] PACKAGE_MANIFEST.json
+  [FI
+
+--- cell 2 ---
+  ===========================================================================
+  STEP 3A — ORIGINAL DATA AVAILABILITY
+  ===========================================================================
+  
+  database:
+  Path: /content/drive/MyDrive/DataPilot/database/datapilot_test.db
+  Exists: False
+  
+  dataset:
+  Path: /content/drive/MyDrive/DataPilot/datasets/train/initial_8.jsonl
+  Exists: False
+  
+  ===========================================================================
+  STEP 3B — EXTRACTED DATA AVAILABILITY
+  ===========================================================================
+  
+  database/datapilot_test.db
+  Exists:
+
+--- cell 11 ---
+  ====================================================================================================
+  STEP 12 — V6 TRAINER WIRING SEARCH
+  ====================================================================================================
+  
+  FILE: source/validated_candidates/agenttune_adapter_v6_candidate.py
+  15: def build_agenttune_adapter(
+  
+  FILE: source/validated_candidates/agenttune_adapter_v6_candidate_v2.py
+  13: def build_agenttune_adapter(
+  
+  FILE: source/validated_candidates/datapilot_trl_rollout_v6_reconstructed.py
+  5: def build_datapilot_trl_rollout(adapter, prompt_record_map):
+  179: def datapi
+
+--- cell 18 ---
+  AgentTune wheels found:
+  /content/datapilot_v6_gpu/DataPilot_recovered_20261111/recovery_wheels/agenttune-1.1.3-py3-none-any.whl (1,196,145 bytes)
+  
+  Python source files in wheel: 270
+  Relevant source files: 65
+  
+  ====================================================================================================
+  FILE: agenttune/__init__.py
+  ====================================================================================================
+      7: The one-call training factories are also importable directly from the top
+      8: level (lazily — importing ``agenttune`` itself stays cheap; the underlying
+
+--- cell 41 ---
+  ====================================================================================================
+  RECOVERED TRAINING CONFIGURATION
+  ====================================================================================================
+  {
+    "project": "DataPilot",
+    "config_version": "1.0",
+    "created_at_utc": "2026-11-07T18:15:13.680378+00:00",
+    "model": {
+      "base_model": "CohereLabs/tiny-aya-global",
+      "context_length": 8192,
+      "model_size": "approximately 3.35B",
+      "checkpoint_path": "checkpoints/latest",
+      "huggingface_auth_required": true
+    },
+    "framework": {
+      "agent_framewor
+
+--- cell 47 ---
+  ==========================================================================================
+  RECOVERED TRAINING CONFIGURATION
+  ==========================================================================================
+  {
+    "project": "DataPilot",
+    "config_version": "1.0",
+    "created_at_utc": "2026-11-07T18:15:13.680378+00:00",
+    "model": {
+      "base_model": "CohereLabs/tiny-aya-global",
+      "context_length": 8192,
+      "model_size": "approximately 3.35B",
+      "checkpoint_path": "checkpoints/latest",
+      "huggingface_auth_required": true
+    },
+    "framework": {
+      "agent_framework": "AgentTune",
+     
