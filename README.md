@@ -125,7 +125,7 @@ We have not measured the effect of any of these; we do not forecast numbers.
 - **GitHub repo:** https://github.com/Yogendra-A/datapilot-v6
 - **HF model collection:** https://huggingface.co/collections/Yogi016/datapilot-v6-models-6af89a0fc0f1dc548b7e13bb . Contains `Yogi016/datapilot-v6-tiny-aya-sql-grpo-lora`.
 - **HF dataset collection:** https://huggingface.co/collections/Yogi016/datapilot-v6-datasets-6af89a0f03be12bf9abc75f3 . Contains `Yogi016/datapilot-v6-sql-benchmark` and `Yogi016/datapilot-v6-trajectories-and-logs`.
-- **Demo / video:** none.
+
 
 ## Documentation and reproduction
 
