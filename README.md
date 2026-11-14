@@ -160,6 +160,3 @@ TAG=tuned ADAPTER=grpo_out python eval.py                # tuned numbers; adapte
 
 The dataset, training and evaluation scripts and the draft of this write-up were largely written with Claude (Anthropic) assistance, and the results were produced by running them. **TODO:** add your approximate percentage.
 
-## Teammates tagged
-
-**TODO:** add teammates and author contributions.
